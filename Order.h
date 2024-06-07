@@ -134,6 +134,67 @@ public:
         file.close();
         return true;
     }
+    
+    
+    DeliveryMethod chooseDeliveryMethod(int choice) {
+        switch (choice) {
+            case 1 :
+                return DeliveryMethod::Standard;
+            case 2:
+                return DeliveryMethod::Express;
+            case 3:
+                return DeliveryMethod::Pickup;
+            default:
+                return DeliveryMethod::Standard;
+        }
+    }
+    
+    
+    
+    
+    double calculateDeliveryCost(DeliveryMethod method) {
+        double basePrice = 200.0;
+        switch (method) {
+            case DeliveryMethod::Standard:
+                return basePrice;
+            case DeliveryMethod::Express:
+                return basePrice * 1.5;
+            case DeliveryMethod::Pickup:
+                return 0;
+            default:
+                return -1;
+        }
+    }
+    
+    double calculateOrderCost(int orderIndex, DeliveryMethod deliveryMethod) {
+        std::vector<Order> orders = readOrders();
+        if (orderIndex >= 0 && orderIndex < orders.size()) {
+            Order& order = orders[orderIndex];
+            double totalCost = 0;
+            for (const auto& product : order.products) {
+                Product foundProduct = productManager.findProductByName(product.first);
+                if (foundProduct.name != "") {
+                    totalCost += foundProduct.price * product.second;
+                }
+                else {
+                    std::cerr << "Товар '" << product.first << "' не найден в каталоге.\n";
+                    return -1;
+                }
+            }
+            
+            double deliveryCost = calculateDeliveryCost(deliveryMethod);
+            if (deliveryCost != -1) {
+                return totalCost + deliveryCost;
+            }
+            else {
+                return -1;
+            }
+        }
+        else {
+            std::cerr << "Неверный индекс заказа.\n";
+            return -1;
+        }
+    }
 
 private:
     

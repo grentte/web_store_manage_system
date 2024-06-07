@@ -1,7 +1,6 @@
 #include "Customer.h"
 #include "Products.h"
 #include "Order.h"
-#include "Delivery.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,21 +8,17 @@
 
 int main() {
     setlocale(LC_ALL, "Russian");
-    
 
     std::string filename1 = "сustomers.txt";
     std::string filename2 = "products.txt";
     std::string filename3 = "orders.txt";
-    std::string filename4 = "deliveries.txt";
     CustomerManager customerManager(filename1);
     ProductManager productManager(filename2);
     OrderManager orderManager(filename3, productManager);
-    DeliveryManager deliveryManager(filename4);
 
     std::vector<Product> readProducts;
     productManager.readProducts(readProducts);
     std::vector<Order> readOrders;
-    std::vector<Delivery> readDeliveries;
 
     bool running = true;
     bool is_authorised = false;
@@ -34,8 +29,7 @@ int main() {
             std::cout << "1. Управление клиентами\n";
             std::cout << "2. Управление продуктами\n";
             std::cout << "3. Управление заказами\n";
-            std::cout << "4. Управление доставкой\n";
-            std::cout << "5. Выход\n";
+            std::cout << "4. Выход\n";
             std::cout << "Выберите действие: ";
             std::cin >> main_choice;
             std::cin.ignore();
@@ -180,7 +174,8 @@ int main() {
                         std::cout << "1. Добавить заказ\n";
                         std::cout << "2. Изменить статус заказа\n";
                         std::cout << "3. Получить информацию о заказе\n";
-                        std::cout << "4. Назад\n";
+                        std::cout << "4. Расчитать стоимость заказа\n";
+                        std::cout << "5. Назад\n";
                         std::cout << "Выберите действие: ";
                         std::cin >> order_choice;
                         std::cin.ignore();
@@ -238,13 +233,28 @@ int main() {
                             orderManager.getOrderInfo(orderIndex - 1);
                             break;
                         }
-                        case 4:
+                        case 4: {
+                            int orderIndex;
+                            std::cout << "Введите индекс заказа: ";
+                            std::cin >> orderIndex;
+                            std::cin.ignore();
+                            int deliveryChoice;
+                            std::cout << "\nВыберите способ доставки: \n";
+                            std::cout << "1. Стандартный\n";
+                            std::cout << "2. Экспресс\n";
+                            std::cout << "3. Самовывоз\n";
+                            std::cin >> deliveryChoice;
+                            
+                            std::cout << orderManager.calculateOrderCost(orderIndex-1, orderManager.chooseDeliveryMethod(deliveryChoice)) << " руб." <<  std::endl;
+                            break;
+                        }
+                        case 5:
                             std::cout << "Возврат в главное меню.\n";
                             break;
                         default:
                             std::cout << "Неверный выбор. Попробуйте снова.\n";
                         }
-                    } while (order_choice != 4);
+                    } while (order_choice != 5);
                     break;
                 }
                 else {
@@ -252,161 +262,14 @@ int main() {
                 }
                 break;
             }
-            case 4: {
-                if (is_authorised) {
-                    int delivery_choice;
-                    do {
-                            std::cout << "\nМеню доставки:\n";
-                            std::cout << "1. Добавить доставку\n";
-                            std::cout << "2. Показать все доставки\n";
-                            std::cout << "3. Изменить доставку\n";
-                            std::cout << "4. Удалить доставку\n";
-                            std::cout << "5. Назад\n";
-                            std::cout << "Выберите действие: ";
-                            std::cin >> delivery_choice;
-                            std::cin.ignore();
-
-                            switch (delivery_choice) {
-                            case 1: {
-                                Delivery newDelivery;
-                                std::cout << "Введите адрес доставки: ";
-                                std::getline(std::cin, newDelivery.deliveryAddress);
-                                std::cout << "Введите номер заказа: ";
-                                std::cin >> newDelivery.orderNumber;
-                                std::cin.ignore();
-                                std::cout << "Введите стоимость доставки: ";
-                                std::cin >> newDelivery.deliveryCost;
-                                std::cin.ignore();
-                                std::cout << "Выберите способ доставки:\n";
-                                std::cout << "1. Standard\n";
-                                std::cout << "2. Express\n";
-                                std::cout << "3. Pickup\n";
-                                int methodChoice;
-                                std::cin >> methodChoice;
-                                std::cin.ignore();
-                                switch (methodChoice) {
-                                case 1:
-                                    newDelivery.deliveryMethod = DeliveryMethod::Standard;
-                                    break;
-                                case 2:
-                                    newDelivery.deliveryMethod = DeliveryMethod::Express;
-                                    break;
-                                case 3:
-                                    newDelivery.deliveryMethod = DeliveryMethod::Pickup;
-                                    break;
-                                default:
-                                    std::cerr << "Неверный выбор.\n";
-                                    break;
-                                }
-                                if (deliveryManager.addDelivery(newDelivery)) {
-                                    std::cout << "Доставка добавлена успешно!\n";
-                                } else {
-                                    std::cerr << "Ошибка добавления доставки.\n";
-                                }
-                                break;
-                            }
-                            case 2: {
-                                if (!readDeliveries.empty()) {
-                                    for (const auto& delivery : readDeliveries) {
-                                        std::cout << "Адрес: " << delivery.deliveryAddress << std::endl;
-                                        std::cout << "Номер заказа: " << delivery.orderNumber << std::endl;
-                                        std::cout << "Стоимость доставки: " << delivery.deliveryCost << std::endl;
-                                        switch (delivery.deliveryMethod) {
-                                        case DeliveryMethod::Standard:
-                                            std::cout << "Способ доставки: Standard\n";
-                                            break;
-                                        case DeliveryMethod::Express:
-                                            std::cout << "Способ доставки: Express\n";
-                                            break;
-                                        case DeliveryMethod::Pickup:
-                                            std::cout << "Способ доставки: Pickup\n";
-                                            break;
-                                        }
-                                        std::cout << std::endl;
-                                    }
-                                } else {
-                                    std::cout << "Список доставок пуст.\n";
-                                }
-                                break;
-                            }
-                            case 3: {
-                                int deliveryIndex;
-                                std::cout << "Введите индекс доставки для изменения: ";
-                                std::cin >> deliveryIndex;
-                                std::cin.ignore();
-                                if (deliveryIndex >= 0 && deliveryIndex < readDeliveries.size()) {
-                                    Delivery& delivery = readDeliveries[deliveryIndex];
-                                    std::cout << "Введите новый адрес доставки: ";
-                                    std::getline(std::cin, delivery.deliveryAddress);
-                                    std::cout << "Выберите способ доставки:\n";
-                                    std::cout << "1. Standard\n";
-                                    std::cout << "2. Express\n";
-                                    std::cout << "3. Pickup\n";
-                                    int methodChoice;
-                                    std::cin >> methodChoice;
-                                    std::cin.ignore();
-                                    switch (methodChoice) {
-                                    case 1:
-                                        delivery.deliveryMethod = DeliveryMethod::Standard;
-                                        break;
-                                    case 2:
-                                        delivery.deliveryMethod = DeliveryMethod::Express;
-                                        break;
-                                    case 3:
-                                        delivery.deliveryMethod = DeliveryMethod::Pickup;
-                                        break;
-                                    default:
-                                        std::cerr << "Неверный выбор.\n";
-                                        break;
-                                    }
-                                    if (deliveryManager.writeDeliveries(readDeliveries)) {
-                                        std::cout << "Доставка изменена успешно!\n";
-                                    } else {
-                                        std::cerr << "Ошибка изменения доставки.\n";
-                                    }
-                                } else {
-                                    std::cerr << "Неверный индекс доставки.\n";
-                                }
-                                break;
-                            }
-                            case 4: {
-                                int deliveryIndex;
-                                std::cout << "Введите индекс доставки для удаления: ";
-                                std::cin >> deliveryIndex;
-                                std::cin.ignore();
-                                if (deliveryIndex >= 0 && deliveryIndex < readDeliveries.size()) {
-                                    readDeliveries.erase(readDeliveries.begin() + deliveryIndex);
-                                    if (deliveryManager.writeDeliveries(readDeliveries)) {
-                                        std::cout << "Доставка удалена успешно!\n";
-                                    } else {
-                                        std::cerr << "Ошибка удаления доставки.\n";
-                                    }
-                                } else {
-                                    std::cerr << "Неверный индекс доставки.\n";
-                                }
-                                break;
-                            }
-                            case 5:
-                                std::cout << "Возврат в главное меню.\n";
-                                break;
-                            default:
-                                std::cerr << "Неверный выбор. Попробуйте снова.\n";
-                            }
-                        } while (delivery_choice != 5);
-                } else {
-                    std::cout << "Авторизуйтесь!!!!\n";
-                }
-                break;
-                    
-            }
-            case 5:
+            case 4:
                 running = false;
                 std::cout << "До свидания!\n";
                 break;
             default:
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
             }
-        } while (main_choice != 5);
+        } while (main_choice != 4);
     }
 
     return 0;

@@ -7,6 +7,12 @@
 #include <algorithm>
 #include <locale>
 
+enum class DeliveryMethod {
+    Standard,
+    Express,
+    Pickup
+};
+
 struct Order {
     std::vector<std::pair<std::string, int>> products;
     std::string deliveryAddress;

@@ -17,7 +17,7 @@ struct Delivery {
     DeliveryMethod deliveryMethod;
 };
 
-
+//добавить доставку, изменить способ доставки, расчитать стоимость доставки, узнать адрес доставки, сменить адрес доставки
 class DeliveryManager {
 public:
     DeliveryManager(const std::string& filename) : filename(filename) {}
@@ -25,7 +25,7 @@ public:
     
     double countCost(int orderNumber, const Order& order) {
         std::vector<Product> products;
-        ProductManager productManager;
+        ProductManager productManager(filename);
         productManager.readProducts(products);
 
         double totalCost = 0;

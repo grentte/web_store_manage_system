@@ -22,9 +22,9 @@ int main() {
         int main_choice;
         do {
             std::cout << "\nМеню:\n";
-            std::cout << "1. Управление клиентами\n";
-            std::cout << "2. Управление продуктами\n";
-            std::cout << "3. Управление заказами\n";
+            std::cout << "1. Авторизация/регистрация\n";
+            std::cout << "2. Товары\n";
+            std::cout << "3. Заказы\n";
             std::cout << "4. Выход\n";
             std::cout << "Выберите действие: ";
             std::cin >> main_choice;
@@ -81,11 +81,11 @@ int main() {
                 if (is_authorised) {
                     int product_choice;
                     do {
-                        std::cout << "\nМеню продуктов:\n";
-                        std::cout << "1. Добавить продукт\n";
-                        std::cout << "2. Показать все продукты\n";
-                        std::cout << "3. Изменить продукт\n";
-                        std::cout << "4. Удалить продукт\n";
+                        std::cout << "\nМеню товаров:\n";
+                        std::cout << "1. Добавить товар\n";
+                        std::cout << "2. Показать все товары\n";
+                        std::cout << "3. Изменить товар\n";
+                        std::cout << "4. Удалить товар\n";
                         std::cout << "5. Назад\n";
                         std::cout << "Выберите действие: ";
                         std::cin >> product_choice;
@@ -110,41 +110,41 @@ int main() {
                             break;
                         case 3: {
                             std::string productName;
-                            std::cout << "Введите название продукта для изменения: ";
+                            std::cout << "Введите название товара для изменения: ";
                             std::getline(std::cin, productName);
 
                             Product newProduct;
-                            std::cout << "Введите новое название продукта: ";
+                            std::cout << "Введите новое название товара: ";
                             std::getline(std::cin, newProduct.name);
-                            std::cout << "Введите новую цену продукта: ";
+                            std::cout << "Введите новую цену товара: ";
                             std::cin >> newProduct.price;
                             std::cin.ignore();
-                            std::cout << "Введите новое количество продукта: ";
+                            std::cout << "Введите новое количество товара: ";
                             std::cin >> newProduct.quantity;
                             std::cin.ignore();
-                            std::cout << "Введите новое описание продукта: ";
+                            std::cout << "Введите новое описание товара: ";
                             std::getline(std::cin, newProduct.description);
 
                             if (productManager.updateProduct(productName, newProduct)) {
-                                std::cout << "Продукт изменен!" << std::endl;
+                                std::cout << "товар изменен!" << std::endl;
                                 productManager.readProducts(readProducts);
                             }
                             else {
-                                std::cout << "Продукт не найден." << std::endl;
+                                std::cout << "товар не найден." << std::endl;
                             }
                             break;
                         }
                         case 4: {
                             std::string productName;
-                            std::cout << "Введите название продукта для удаления: ";
+                            std::cout << "Введите название товара для удаления: ";
                             std::getline(std::cin, productName);
 
                             if (productManager.deleteProduct(productName)) {
-                                std::cout << "Продукт удален!" << std::endl;
+                                std::cout << "товар удален!" << std::endl;
                                 productManager.readProducts(readProducts);
                             }
                             else {
-                                std::cout << "Продукт не найден." << std::endl;
+                                std::cout << "товар не найден." << std::endl;
                             }
                             break;
                         }

@@ -18,7 +18,6 @@ public:
 
     bool writeProducts(const std::vector<Product>& products);
     
-
     bool readProducts(std::vector<Product>& products);
     
     Product findProductByName(const std::string& name);

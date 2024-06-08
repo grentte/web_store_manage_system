@@ -1,11 +1,5 @@
 #pragma once
 #include "Products.h"
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <locale>
 
 enum class DeliveryMethod {
     Standard,

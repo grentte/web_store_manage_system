@@ -1,10 +1,6 @@
 #include "Customer.h"
 #include "Products.h"
 #include "Order.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
 
 int main() {
     setlocale(LC_ALL, "Russian");

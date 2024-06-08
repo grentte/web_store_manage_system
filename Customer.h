@@ -3,7 +3,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <algorithm>
 
 struct Customer {
     std::string username;
